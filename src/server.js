@@ -1,3 +1,4 @@
+const config = require('./config.js');
 const express = require('express');
 
 const server = {
@@ -15,8 +16,10 @@ const server = {
         
         app.get('/auth', require('./endpoints/auth.js'));
         
+        app.get('/login', require('./endpoints/login.js'));
+        
         // start listening on port
-        app.listen(4000);
+        app.listen(config.port);
     }
 }
 

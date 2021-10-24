@@ -1,6 +1,7 @@
 const path = require('path');
 
 const config = {
+    port: process.env.PORT || 4000,
     dbUrl: process.env.DB_URL,
     dbPass: process.env.DB_PASS,
     dbDir: path.join(__dirname, '../dbs'),

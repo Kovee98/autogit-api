@@ -26,7 +26,7 @@ async function run (req, res) {
         // store user/token in db
         
 
-        return res.redirect(url(`${config.redirectUrl}`, { ok: true, ...body }));
+        return res.redirect(url(`${config.redirectUrl}/dashboard`, { ok: true, ...body }));
     } catch (err) {
         console.error('err', err);
         return res.redirect(url(`${config.redirectUrl}`, { ok: false, ...err }));
