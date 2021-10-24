@@ -1,4 +1,4 @@
 node_modules
-dbs
+dbs/*
 !dbs/.gitkeep
 *.env

@@ -25,7 +25,13 @@ async function start () {
                         }
                     })
                     .exec()
-                    .then((doc) => doc.toJSON());
+                    .then((doc) => {
+                        if (doc) {
+                            return doc.toJSON();
+                        } else {
+                            return {};
+                        }
+                    });
 
                 console.log(doc);
             } catch (err) {
