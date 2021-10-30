@@ -3,6 +3,7 @@ const http = require('superagent');
 const { url } = require('../utils/utils.js');
 const { users }= require('../utils/dbs.js');
 
+// retrieve access token
 async function run (req, res) {
     try {
         const query = req.query;
@@ -19,12 +20,12 @@ async function run (req, res) {
             .then((res = {}) => res.body || {});
         
         const token = body.access_token;
-        const user = await http.get('https://api.github.com/user')
-            .set('Authorization', `token ${token}`);
+        // const user = await http.get('https://api.github.com/user')
+        //     .set('Authorization', `token ${token}`);
         
-        console.log('token:', token);
         // store user/token in db
-        
+        // res.cookie('token', token);
+        req.session.token = token;
 
         return res.redirect(url(`${config.redirectUrl}/dashboard`, { ok: true, ...body }));
     } catch (err) {
