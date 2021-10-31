@@ -1,27 +1,10 @@
 const config = require('./config.js');
 const express = require('express');
-const session = require('express-session');
 const helmet = require('helmet');
-const redis = require('redis');
-const RedisStore = require('connect-redis')(session);
-const passport = require('passport');
-const GitHubStrategy = require('passport-github').Strategy;
+const redis = require('./middleware/redis.js');
+const passport = require('./middleware/passport.js');
+const cors = require('./middleware/cors.js');
 const protect = require('./middleware/protect.js');
-
-passport.use(new GitHubStrategy({
-        clientID: config.clientId,
-        clientSecret: config.clientSecret,
-        callbackURL: "http://localhost:4000/auth/github/callback"
-    }, (accessToken, refreshToken, user, done) => {
-        console.log('accessToken:', accessToken);
-        console.log('refreshToken:', refreshToken);
-        console.log('user:', user);
-        return done(null, user);
-        // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-        //     return done(err, user);
-        // });
-    }
-));
 
 const server = {
     init () {
@@ -30,57 +13,33 @@ const server = {
 
         // middleware
         app.use(express.json());
+        app.use(cors);
         app.use(helmet());
-        app.use(session({
-            name: 'ag_sid',
-            store: new RedisStore({
-                client: redis.createClient(config.redis)
-            }),
-            secret: config.cookieKey,
-            cookie: {
-                // maxAge: 24 * 60 * 60 * 1000 // 24 hours
-                maxAge: config.maxAge
-            },
-            // resave: true,
-            resave: false,
-            // saveUninitialized: true,
-            saveUninitialized: false,
-        }));
+        app.use(redis);
         app.use(passport.initialize());
         app.use(passport.session());
-
-        passport.serializeUser((user, done) => {
-            // placeholder for custom user serialization
-            done(null, user);
-        });
-
-        passport.deserializeUser((user, done) => {
-            // placeholder for custom user deserialization.
-            // maybe you are getoing to get the user from mongo by id?
-            done(null, user); // null is for errors
-        });
 
         // endpoints
         app.get('/ping', (req, res) => res.json({ ok: true }));
 
-        app.get('/cookie', protect, function (req, res) {
-            // console.log(req.session);
-            // console.log('isAuthenticated', req.isAuthenticated());
-            // return res.redirect(`${config.redirectUrl}/dashboard`);
-            return res.json({ ok: true });
+        app.get('/session', (req, res) => {
+            console.log('isAuthenticated:', req.isAuthenticated());
+            res.json({ ok: true, authenticated: req.isAuthenticated() });
         });
 
         app.get('/login', passport.authenticate('github'));
 
-        app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: `${config.redirectUrl}/dashboard` }), (req, res) => {
-            console.log('wooh!');
+        app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: `${config.redirectUrl}/login` }), (req, res) => {
+            console.log('Successfully authenticated!');
+            // req.logIn()
             res.redirect(`${config.redirectUrl}/dashboard`);
         });
 
-        app.get('/auth', require('./endpoints/auth.js'));
+        app.get('/auth', protect, require('./endpoints/auth.js'));
 
-        // app.get('/login', require('./endpoints/login.js'));
-        
+        app.get('/repos', protect, require('./endpoints/repos.js'));
+        app.get('/tasks', protect, require('./endpoints/tasks.js'));
+
         // start listening on port
         app.listen(config.port);
     }

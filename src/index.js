@@ -5,7 +5,7 @@ const dbs = require('./utils/dbs.js');
 async function start () {
     try {
         await server.init();
-        await dbs.init();
+        // await dbs.init();
 
         console.log('Started successfully!');
 
