@@ -16,7 +16,7 @@ const redis = session({
     secret: config.cookieKey,
     cookie: {
         maxAge: config.maxAge,
-        // secure: config.secureCookies
+        secure: config.secureCookies
     },
     // rolling: true,
     resave: false,
