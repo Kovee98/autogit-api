@@ -22,7 +22,12 @@ const server = {
         // endpoints
         app.get('/ping', (req, res) => res.json({ ok: true }));
 
-        app.get('/session', (req, res) => res.json({ ok: true, authenticated: req.isAuthenticated() }));
+        app.get('/user', protect, (req, res) => {
+            return res.json({
+                ok: true,
+                session: req.session
+            });
+        });
 
         app.get('/login', passport.authenticate('github'));
         app.delete('/logout', (req, res) => {

@@ -18,8 +18,9 @@ const redis = session({
         maxAge: config.maxAge,
         secure: config.secureCookies
     },
-    // rolling: true,
-    resave: false,
+    rolling: true,
+    // resave: false,
+    resave: true,
     saveUninitialized: false,
 });
 
