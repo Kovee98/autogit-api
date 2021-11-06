@@ -9,7 +9,7 @@ const config = {
         // db: 2,
     },
     // maxAge: Number(process.env.MAX_AGE) || TIME.DAY,
-    maxAge: Number(process.env.MAX_AGE) || 5 * TIME.MINUTE,
+    maxAge: Number(process.env.MAX_AGE) || 2 * TIME.MINUTE,
     secureCookies: process.env.SECURE_COOKIES !== 'false',
     cookieKey: process.env.COOKIE_KEY,
     dbHost: process.env.DB_HOST,

@@ -25,8 +25,20 @@ const server = {
         app.get('/session', (req, res) => res.json({ ok: true, authenticated: req.isAuthenticated() }));
 
         app.get('/login', passport.authenticate('github'));
-        app.post('/logout', () => {
-            console.log('logging out');
+        app.delete('/logout', (req, res) => {
+            if (req.session) {
+                req.session.destroy((err) => {
+                    if (err) {
+                        console.log('server:logout:err', err);
+                        return res.status(400).json({ ok: false, msg: 'unable to log out' });
+                    } else {
+                        console.log('server:logout success!');
+                        return res.json({ ok: true, msg: 'logout successful' });
+                    }
+                });
+            } else {
+                return res.end();
+            }
         });
 
         app.get('/auth/github/callback', (req, res, next) => passport.authenticate('github', { failureRedirect: `${config.redirectUrl}/login` }, (err, user, next) => {
