@@ -29,7 +29,20 @@ const server = {
             });
         });
 
-        app.get('/login', passport.authenticate('github'));
+        app.get('/github/login', passport.authenticate('github'));
+        app.get('/github/callback', (req, res, next) => passport.authenticate('github', { failureRedirect: `${config.redirectUrl}/login` }, (err, user, next) => {
+            if (err) { return next(err); }
+            if (!user) { return res.send("-1"); }
+
+            req.logIn(user, (err) => {
+                if (err) { return next(err); }
+                req.session.save(() => res.redirect(`${config.redirectUrl}/dashboard`));
+            });
+        })(req, res, next), (req, res) => {
+            console.log('Successfully authenticated!');
+            res.redirect(`${config.redirectUrl}/dashboard`);
+        });
+
         app.delete('/logout', (req, res) => {
             if (req.session) {
                 req.session.destroy((err) => {
@@ -44,19 +57,6 @@ const server = {
             } else {
                 return res.end();
             }
-        });
-
-        app.get('/auth/github/callback', (req, res, next) => passport.authenticate('github', { failureRedirect: `${config.redirectUrl}/login` }, (err, user, next) => {
-            if (err) { return next(err); }
-            if (!user) { return res.send("-1"); }
-
-            req.logIn(user, (err) => {
-                if (err) { return next(err); }
-                req.session.save(() => res.redirect(`${config.redirectUrl}/dashboard`));
-            });
-        })(req, res, next), (req, res) => {
-            console.log('Successfully authenticated!');
-            res.redirect(`${config.redirectUrl}/dashboard`);
         });
 
         app.get('/repos', protect, require('./endpoints/repos.js'));

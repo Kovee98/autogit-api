@@ -1,7 +1,7 @@
 module.exports = {
     title: "user schema",
     version: 0,
-    description: "describes an autogit user",
+    description: "describes an notella user",
     primaryKey: "name",
     type: "object",
     properties: {

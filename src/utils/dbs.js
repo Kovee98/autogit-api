@@ -17,7 +17,7 @@ const dbs = {
         try {
             // create users db
             dbs.database = await createRxDatabase({
-                name: path.join(config.dbDir, 'autogit'),
+                name: path.join(config.dbDir, 'notella'),
                 storage: getRxStoragePouch(leveldown),
                 password: config.dbPass,
                 multiInstance: false,
@@ -42,7 +42,7 @@ const dbs = {
             }).then((collection) => {
                 if (replicate) {
                     const sync = collection[name].syncCouchDB({
-                        remote: `${config.dbUrl}/autogit-users/`,
+                        remote: `${config.dbUrl}/notella-users/`,
                         options: {
                             live: true,
                             retry: true

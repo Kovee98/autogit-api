@@ -5,7 +5,7 @@ const GitHubStrategy = require('passport-github').Strategy;
 const strategy = new GitHubStrategy({
     clientID: config.clientId,
     clientSecret: config.clientSecret,
-    callbackURL: "http://localhost:4000/auth/github/callback"
+    callbackURL: "http://localhost:4000/github/callback"
 }, (accessToken, refreshToken, user, done) => {
     return done(null, user);
 });

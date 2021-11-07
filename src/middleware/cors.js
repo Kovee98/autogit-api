@@ -3,7 +3,7 @@ const cors = require('cors');
 
 module.exports = cors({
     origin: [
-        'https://autogit.kovalchik.cloud',
+        'https://notella.kovalchik.cloud',
         'http://localhost:3000'
     ],
     credentials: true
