@@ -1,17 +1,11 @@
 const config = require('../config.js');
 const session = require('express-session');
-const nodeRedis = require('redis');
 const RedisStore = require('connect-redis')(session);
-
-// create redis client (node-redis)
-const client = nodeRedis.createClient({
-    ...config.redis
-});
-// client.on('error', (err) => console.log('Redis Client Error', err));
+const client = require('../utils/redis.js');
 
 // express-session config
 const redis = session({
-    name: 'ag_sid',
+    name: 'notella_sid',
     store: new RedisStore({ client }),
     secret: config.cookieKey,
     cookie: {

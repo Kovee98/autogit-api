@@ -22,6 +22,11 @@ const server = {
         // endpoints
         app.get('/ping', (req, res) => res.json({ ok: true }));
 
+        // app.get('/notes', protect, require('./endpoints/notes/notes.get'));
+        // app.post('/notes', protect, require('./endpoints/notes/notes.save'));
+        app.get('/notes', require('./endpoints/notes/notes.get'));
+        app.post('/notes', require('./endpoints/notes/notes.save')); // for debugging only
+
         app.get('/user', protect, (req, res) => {
             return res.json({
                 ok: true,
