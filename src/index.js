@@ -1,9 +1,12 @@
 require('dotenv').config();
 const server = require('./server.js');
-const dbs = require('./utils/dbs.js');
+// const { initDb } = require('./utils/db.js');
+const dbs = require('./utils/db.js');
 
 async function start () {
     try {
+        await dbs.initDb();
+
         await server.init();
         // await dbs.init();
 

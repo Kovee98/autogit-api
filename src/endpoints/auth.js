@@ -1,7 +1,6 @@
 const config = require('../config.js');
 const http = require('superagent');
 const { url } = require('../utils/utils.js');
-const { users }= require('../utils/dbs.js');
 
 // retrieve access token
 async function run (req, res) {

@@ -24,8 +24,10 @@ const server = {
 
         // app.get('/notes', protect, require('./endpoints/notes/notes.get'));
         // app.post('/notes', protect, require('./endpoints/notes/notes.save'));
-        app.get('/notes', require('./endpoints/notes/notes.get'));
-        app.post('/notes', require('./endpoints/notes/notes.save')); // for debugging only
+        // app.put('/notes', protect, require('./endpoints/notes/notes.sync'));
+        app.get('/notes', require('./endpoints/notes/notes.get'));      // for debugging only
+        app.post('/notes', require('./endpoints/notes/notes.save'));    // for debugging only
+        app.put('/notes', require('./endpoints/notes/notes.sync'));     // for debugging only
 
         app.get('/user', protect, (req, res) => {
             return res.json({
@@ -63,9 +65,6 @@ const server = {
                 return res.end();
             }
         });
-
-        app.get('/repos', protect, require('./endpoints/repos.js'));
-        app.get('/tasks', protect, require('./endpoints/tasks.js'));
 
         // start listening on port
         app.listen(config.port);
