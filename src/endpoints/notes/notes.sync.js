@@ -1,36 +1,56 @@
-const redis = require('../../utils/redis.js');
-// const { db } = require('../../utils/db.js');
 const dbs = require('../../utils/db.js');
+const { db } = require('../../utils/db.js');
 
 // save then get
 async function sync (req, res) {
     try {
         const data = req.body.data;
 
-        // redis.set('notella_jkovalchik:notes', JSON.stringify(data));
+        try {
+            const removals = data
+                .filter((note) => note._deleted === true)
+                .map((note) => note.id);
+            
+            console.log('removals:', removals);
 
-        // const notes = await dbs.db.notes.inMemory();
-        const notes = dbs.db.notes;
+            if (removals?.length > 0) {
+                const docs = await db.notes.findByIds(removals);
+                const rids = [ ...docs.keys() ];
+                console.log('rids:', rids);
+                const res = await db.notes.bulkRemove(rids);
+                console.log('res:', res);
+            }
+        } catch (err) {
+            console.log('notes:sync:remove:err', err);
+        }
 
-        await notes.bulkInsert(data);
+        try {
+            const updates = data
+                .filter((note) => !note._deleted);
 
-        // const docs = await notes
-        //     .find()
-        //     .where('user')
-        //     .eq('jkovalchik')
-        //     .exec();
-        const docs = await notes
+            console.log('updates:', updates.length);
+            const docs = await db.notes.bulkInsert(updates);
+
+            console.log('docs:', docs);
+
+            // if (updates?.length > 0) {
+            //     await db.notes.bulkInsert(updates);
+            // } else {
+
+            // }
+        } catch (err) {
+            console.log('notes:sync:remove:err', err);
+        }
+
+        const docs = await db.notes
             .find({
                 selector: {
-                    // id: { $regex: 'jkovalchik-.*' }
                     user: 'jkovalchik'
                 }
             })
             .exec();
 
-        console.log('docs:', docs);
-
-        return res.json({ ok: true, msg: 'save successful!', data: docs });
+        return res.json({ ok: true, data: docs });
     } catch (err) {
         console.error('notes:sync:err', err);
         return res.status(500).json({ ok: false, err });

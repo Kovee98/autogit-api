@@ -1,13 +1,10 @@
-const redis = require('../../utils/redis.js');
 const { db } = require('../../utils/db.js');
 
 async function save (req, res) {
     try {
         const data = req.body.data;
-        console.log('saving:', data);
     
-        // redis.set('notella_jkovalchik:notes', JSON.stringify(data));
-        await db.notes.bulkUpsert(data);
+        await db.notes.bulkInsert(data);
     
         return res.json({ ok: true, msg: 'data saved successfully!' });
     } catch (err) {

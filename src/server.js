@@ -43,11 +43,11 @@ const server = {
 
             req.logIn(user, (err) => {
                 if (err) { return next(err); }
-                req.session.save(() => res.redirect(`${config.redirectUrl}/dashboard`));
+                req.session.save(() => res.redirect(`${config.redirectUrl}/redirect`));
             });
         })(req, res, next), (req, res) => {
             console.log('Successfully authenticated!');
-            res.redirect(`${config.redirectUrl}/dashboard`);
+            res.redirect(`${config.redirectUrl}/redirect`);
         });
 
         app.delete('/logout', (req, res) => {
