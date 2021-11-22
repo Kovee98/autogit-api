@@ -13,7 +13,7 @@ async function sync (req, res) {
             
             console.log('removals:', removals);
 
-            if (removals?.length > 0) {
+            if ((removals || []).length > 0) {
                 const docs = await db.notes.findByIds(removals);
                 const rids = [ ...docs.keys() ];
                 console.log('rids:', rids);
